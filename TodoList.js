@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
-import TodoItem from './TodoItem.js';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/Ionicons.js';
@@ -13,7 +12,6 @@ const TodoList = ({filter, todos, complete, deleteList, editData}) => {
       ? todos.filter(todo => !todo.completed)
       : todos.filter(todo => todo.completed);
 
-  // console.log(filter, 'filer');
   return (
     <View>
       {filteredTodos && filteredTodos?.length > 0 ? (

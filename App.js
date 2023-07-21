@@ -7,9 +7,10 @@ import {
   TouchableOpacity,
   Modal,
   Pressable,
+  TextInput,
+  Button,
 } from 'react-native';
 import TodoList from './TodoList.js';
-import {Provider, Button, InputItem} from '@ant-design/react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons.js';
 
 const App = () => {
@@ -17,12 +18,13 @@ const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [input, setInput] = useState('');
   const [arrData, setArrDAta] = useState([]);
+  const [disable, setDisable] = useState(false);
   const handleFilterChange = filter => setFilter(filter);
 
   const handleAdd = input => {
     arrData.push({title: input, completed: false});
     arrData.sort((a, b) => {
-      return a.title.localeCompare(b.title); // Sort Ascending
+      return a.title.localeCompare(b.title);
     });
     setModalVisible(false);
     setInput('');
@@ -36,15 +38,11 @@ const App = () => {
     arrData.splice(index, 1);
     setArrDAta([...arrData]);
   };
-  // const editData = (update, index) => {
-  //   console.log(update, index);
-  // };
+
   return (
-    // <Provider>
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.header}>TODO List</Text>
-        {/* <Divider /> */}
         <View style={styles.filterButtons}>
           <TouchableOpacity onPress={() => handleFilterChange('All')}>
             <Text style={styles.filterText}>All</Text>
@@ -61,37 +59,34 @@ const App = () => {
           todos={arrData}
           complete={complete}
           deleteList={deleteList}
-          // editData={editData}
         />
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Create Todo </Text>
-            <InputItem
-              style={{
-                borderRadius: 3,
-                borderColor: 'grey',
-                borderWidth: 1,
-                padding: 10,
-              }}
-              clear
+            <TextInput
+              style={styles.input}
               value={input}
-              onChange={value => {
+              onChangeText={value => {
                 setInput(value);
               }}
-              placeholder="Enter task"></InputItem>
-            <View style={{flexDirection: 'row', marginTop: 15}}>
-              <Button
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
+              placeholder="Enter task"></TextInput>
+            <View style={styles.buttongroup}>
+              <TouchableOpacity
+                onPress={() => setModalVisible(!modalVisible)}
+                style={[styles.button, styles.buttonClose]}>
                 <Text style={styles.textStyle}>Cancel</Text>
-              </Button>
-              <Button
-                style={[styles.button, styles.buttonAdd]}
-                onPress={() => handleAdd(input)}>
+              </TouchableOpacity>
+              <TouchableOpacity
+                disabled={input.length < 1}
+                onPress={() => handleAdd(input)}
+                style={[
+                  styles.button,
+                  {backgroundColor: input.length < 1 ? '#627ea1' : '#0a71f2'},
+                ]}>
                 <Text style={styles.textStyle}>Add</Text>
-              </Button>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -102,7 +97,6 @@ const App = () => {
         <Icon name="add-task" size={30} color="#01a699" />
       </TouchableOpacity>
     </SafeAreaView>
-    // </Provider>
   );
 };
 
@@ -116,6 +110,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  input: {
+    borderRadius: 10,
+    borderColor: 'grey',
+    borderWidth: 1,
+    padding: 10,
+    width: 250,
   },
   filterButtons: {
     flexDirection: 'row',
@@ -148,16 +149,21 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 10,
+    borderRadius: 15,
     width: 100,
-    // padding: 10,
-    // elevation: 2,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 5,
   },
-  buttonAdd: {
-    backgroundColor: '#627ea1',
+  buttongroup: {
+    flexDirection: 'row',
+    marginTop: 15,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   buttonClose: {
-    backgroundColor: '#d91809',
+    backgroundColor: '#cf6e5d',
   },
   textStyle: {
     color: 'white',
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 25,
     textAlign: 'center',
     fontSize: 20,
   },
